@@ -108,9 +108,10 @@ model =  TextOcrModel(ocr,text_detect,angle_detect)
 
 billList = ['通用OCR','火车票','身份证']
 
-from classification import post_processing
+import sys
 
-prediction = 'timeout'
+sys.path.append(os.getcwd() + '/classification')
+from classification import post_processing
 
 class OCR:
     """通用OCR识别"""
@@ -190,7 +191,7 @@ class OCR:
                                } for i,x in enumerate(result)]
                         res = adjust_box_to_origin(img,angle, res)##修正box
 
-                        prediction = post_processing.test(result)
+                        prediction = post_processing.parse_license(result)
                     elif billModel=='火车票':
                         res = trainTicket.trainTicket(result)
                         res = res.res
@@ -208,7 +209,9 @@ class OCR:
         
         timeTake = time.time()-t
 
-        return json.dumps({'prediction': prediction, 'res': res, 'timeTake': round(timeTake, 4)}, ensure_ascii=False)
+        return json.dumps(
+            {'result': prediction['result'], 'cost': round(timeTake, 4), 'errorCode': prediction['errorCode'],
+             'errorMsg': prediction['errorMsg']}, ensure_ascii=False)
         
 
 urls = ('/ocr','OCR',)
