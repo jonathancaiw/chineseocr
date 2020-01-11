@@ -209,12 +209,14 @@ class OCR:
         
         timeTake = time.time()-t
 
+        # return json.dumps({'res':res,'timeTake':round(timeTake,4)},ensure_ascii=False)
         return json.dumps(
             {'result': prediction['result'], 'cost': round(timeTake, 4), 'errorCode': prediction['errorCode'],
              'errorMsg': prediction['errorMsg']}, ensure_ascii=False)
-        
 
-urls = ('/ocr','OCR',)
+
+# urls = ('/ocr','OCR',)
+urls = ('/ocris/v1/bl', 'OCR',)
 
 if __name__ == "__main__":
 
