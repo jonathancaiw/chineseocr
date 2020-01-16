@@ -112,6 +112,7 @@ import sys
 
 sys.path.append(os.getcwd() + '/classification')
 from classification import post_processing
+from classification import algorithm
 
 class OCR:
     """通用OCR识别"""
@@ -135,8 +136,11 @@ class OCR:
         billModel = data.get('billModel','')
         textAngle = data.get('textAngle',False)##文字检测
         textLine = data.get('textLine',False)##只进行单行识别
-        
-        imgString = data['imgString'].encode().split(b';base64,')[-1]
+
+        # imgString = data['imgString'].encode().split(b';base64,')[-1]
+        imgString = data['img'].encode().split(b';base64,')[-1]
+        print(data['img'])
+
         img = base64_to_PIL(imgString)
         if img is not None:
             img = np.array(img)
@@ -210,6 +214,7 @@ class OCR:
         timeTake = time.time()-t
 
         # return json.dumps({'res':res,'timeTake':round(timeTake,4)},ensure_ascii=False)
+        algorithm.write_log(prediction)
         return json.dumps(
             {'result': prediction['result'], 'cost': round(timeTake, 4), 'errorCode': prediction['errorCode'],
              'errorMsg': prediction['errorMsg']}, ensure_ascii=False)
